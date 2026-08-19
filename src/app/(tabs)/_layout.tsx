@@ -4,7 +4,8 @@ import { Colors } from '../../constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme() ?? 'light';
+  const rawColorScheme = useColorScheme();
+  const colorScheme = rawColorScheme === 'dark' ? 'dark' : 'light';
 
   return (
     <Tabs
