@@ -34,15 +34,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Map',
-          tabBarIcon: ({ color, size }) => <Ionicons name="map" size={size} color={color} />,
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="stations"
+        name="bookmarks"
         options={{
-          title: 'Stations',
-          tabBarIcon: ({ color, size }) => <Ionicons name="battery-charging" size={size} color={color} />,
+          title: 'Bookmarks',
+          tabBarIcon: ({ color, size }) => <Ionicons name="bookmarks" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
