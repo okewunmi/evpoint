@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import React from 'react';
 
 export default function TabLayout() {
   const rawColorScheme = useColorScheme();
