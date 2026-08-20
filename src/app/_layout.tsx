@@ -1,18 +1,31 @@
-// import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router/react-navigation';
+import React from 'react';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavThemeProvider } from 'expo-router/react-navigation';
 import { Stack } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import React from 'react';
+import { AuthProvider } from '@/context/AuthContext';
+import { ThemeProvider as AppThemeProvider } from '@/context/ThemeContext';
 
-export default function RootLayout() {
+function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    <NavThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>
-    </ThemeProvider>
+    </NavThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AppThemeProvider>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </AppThemeProvider>
   );
 }
