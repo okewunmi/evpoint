@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useAuth } from '@/context/AuthContext';
 
 export default function SignInScreen() {
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -18,6 +18,15 @@ export default function SignInScreen() {
 
     if (error) {
       Alert.alert('Sign in failed', error.message);
+      return;
+    }
+    router.replace('/(tabs)');
+  };
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await signInWithGoogle();
+    if (error) {
+      Alert.alert('Google sign-in failed', error.message);
       return;
     }
     router.replace('/(tabs)');
@@ -45,6 +54,12 @@ export default function SignInScreen() {
 
       <Pressable onPress={handleSignIn} disabled={submitting} style={{ backgroundColor: '#0a7ea4', padding: 14, borderRadius: 8, alignItems: 'center' }}>
         <ThemedText style={{ color: '#fff' }}>{submitting ? 'Signing in…' : 'Sign In'}</ThemedText>
+      </Pressable>
+      <Pressable
+        onPress={handleGoogleSignIn}
+        style={{ borderWidth: 1, borderColor: '#ccc', padding: 14, borderRadius: 8, alignItems: 'center', marginTop: 12 }}
+      >
+        <ThemedText>Continue with Google</ThemedText>
       </Pressable>
 
       <Link href="/(auth)/sign-up" style={{ marginTop: 16, textAlign: 'center' }}>
