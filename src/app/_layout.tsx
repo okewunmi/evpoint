@@ -39,7 +39,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import React, { useEffect } from 'react';
 
 GoogleSignin.configure({
-  webClientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com', // from Google Cloud Console
+  webClientId: '867573901583-e7g0cpdco0qpfakq7il3u7pacfdi70lf.apps.googleusercontent.com', // from Google Cloud Console
 });
 
 function RootLayoutNav() {
