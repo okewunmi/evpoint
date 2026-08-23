@@ -28,7 +28,7 @@ export function ThemedText({ style, lightColor, darkColor, type = 'default', ...
 
 const styles = StyleSheet.create({
   default: { fontSize: 16, lineHeight: 24 },
-  title: { fontSize: 28, fontWeight: 'bold' },
+  title: { fontSize: 24, fontWeight: 'bold' },
   subtitle: { fontSize: 20, fontWeight: '600' },
   link: { fontSize: 16, color: '#0a7ea4' },
 });
