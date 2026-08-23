@@ -76,3 +76,84 @@ export async function addUserVehicle(userId: string, brand: string, model: strin
     .single();
   return { data, error };
 }
+
+export async function getNearbyStations() {
+  const { data, error } = await supabase.from('stations').select('*');
+  return { data, error };
+}
+
+export async function getStationDetail(stationId: string) {
+  const { data, error } = await supabase.from('stations').select('*').eq('id', stationId).single();
+  return { data, error };
+}
+
+export async function getStationChargers(stationId: string) {
+  const { data, error } = await supabase.from('chargers').select('*').eq('station_id', stationId);
+  return { data, error };
+}
+
+export async function getStationCheckIns(stationId: string) {
+  const { data, error } = await supabase
+    .from('check_ins')
+    .select('*')
+    .eq('station_id', stationId)
+    .order('created_at', { ascending: false });
+  return { data, error };
+}
+
+export async function getStationReviews(stationId: string) {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .eq('station_id', stationId)
+    .order('created_at', { ascending: false });
+  return { data, error };
+}
+
+export async function createCheckIn(fields: {
+  station_id: string;
+  user_id: string;
+  check_in_type: string;
+  comment?: string;
+  max_kw?: number;
+  wait_duration?: string;
+  problem_type?: string;
+}) {
+  const { data, error } = await supabase.from('check_ins').insert(fields).select().single();
+  return { data, error };
+}
+
+export function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+export async function getStationHours(stationId: string) {
+  const { data, error } = await supabase.from('station_hours').select('*').eq('station_id', stationId);
+  return { data, error };
+}
+
+export async function getStationAmenities(stationId: string) {
+  const { data, error } = await supabase.from('station_amenities').select('*').eq('station_id', stationId);
+  return { data, error };
+}
+
+export async function toggleFavorite(userId: string, stationId: string, isFavorited: boolean) {
+  if (isFavorited) {
+    const { error } = await supabase.from('favorites').delete().eq('user_id', userId).eq('station_id', stationId);
+    return { error };
+  }
+  const { error } = await supabase.from('favorites').insert({ user_id: userId, station_id: stationId });
+  return { error };
+}
+
+export async function isFavorited(userId: string, stationId: string) {
+  const { data } = await supabase.from('favorites').select('id').eq('user_id', userId).eq('station_id', stationId).maybeSingle();
+  return !!data;
+}

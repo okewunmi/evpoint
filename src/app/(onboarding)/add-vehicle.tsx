@@ -24,7 +24,7 @@ export default function AddVehiclePrompt() {
       </ThemedText>
 
       <Image
-        source={require('@/assets/images/add-vehicle-illustration.png')}
+        source={require('@/assets/images/car.svg')}
         style={styles.illustration}
         resizeMode="contain"
       />
