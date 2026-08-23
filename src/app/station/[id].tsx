@@ -171,7 +171,9 @@ export default function StationDetailScreen() {
 
           {activeTab === 'Chargers' && <ChargersTab stationId={id} />}
           {activeTab === 'Check-ins' && <CheckInsTab stationId={id} />}
-          {activeTab === 'Reviews' && <ReviewsTab stationId={id} />}
+          {activeTab === 'Reviews' && (
+  <ReviewsTab stationId={id} stationRating={station.rating} reviewCount={station.review_count} />
+)}
         </View>
       </ScrollView>
 

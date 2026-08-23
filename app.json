@@ -18,7 +18,12 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.fourfive.EVPoint"
+      "package": "com.fourfive.EVPoint",
+      "config": {
+    "googleMaps": {
+      "apiKey": "YOUR_ACTUAL_API_KEY_HERE"
+    }
+  }
     },
     "web": {
       "output": "static",

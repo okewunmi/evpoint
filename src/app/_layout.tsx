@@ -17,6 +17,11 @@ function RootLayoutNav() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="search" />
+<Stack.Screen name="filter" />
+<Stack.Screen name="route-planner" />
+<Stack.Screen name="route-result" />
+<Stack.Screen name="route-active" />
         <Stack.Screen name="+not-found" />
       </Stack>
     </NavThemeProvider>

@@ -101,14 +101,14 @@ export async function getStationCheckIns(stationId: string) {
   return { data, error };
 }
 
-export async function getStationReviews(stationId: string) {
-  const { data, error } = await supabase
-    .from('reviews')
-    .select('*')
-    .eq('station_id', stationId)
-    .order('created_at', { ascending: false });
-  return { data, error };
-}
+// export async function getStationReviews(stationId: string) {
+//   const { data, error } = await supabase
+//     .from('reviews')
+//     .select('*')
+//     .eq('station_id', stationId)
+//     .order('created_at', { ascending: false });
+//   return { data, error };
+// }
 
 export async function createCheckIn(fields: {
   station_id: string;
@@ -156,4 +156,90 @@ export async function toggleFavorite(userId: string, stationId: string, isFavori
 export async function isFavorited(userId: string, stationId: string) {
   const { data } = await supabase.from('favorites').select('id').eq('user_id', userId).eq('station_id', stationId).maybeSingle();
   return !!data;
+}
+
+export async function getStationReviews(stationId: string, sortBy: 'newest' | 'oldest' = 'newest') {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*, profiles(full_name, avatar_url)')
+    .eq('station_id', stationId)
+    .order('created_at', { ascending: sortBy === 'oldest' });
+  return { data, error };
+}
+
+export async function getReviewBreakdown(stationId: string) {
+  const { data, error } = await supabase.from('reviews').select('rating').eq('station_id', stationId);
+  if (error || !data) return { breakdown: [0, 0, 0, 0, 0], error };
+
+  const breakdown = [0, 0, 0, 0, 0]; // index 0 = 1-star, index 4 = 5-star
+  data.forEach((r) => {
+    if (r.rating >= 1 && r.rating <= 5) breakdown[r.rating - 1]++;
+  });
+  return { breakdown, error: null };
+}
+
+export async function createReview(stationId: string, userId: string, rating: number, comment: string) {
+  const { data, error } = await supabase
+    .from('reviews')
+    .insert({ station_id: stationId, user_id: userId, rating, comment })
+    .select()
+    .single();
+
+  if (!error) {
+    // Recalculate and update station's aggregate rating/count
+    const { data: allReviews } = await supabase.from('reviews').select('rating').eq('station_id', stationId);
+    if (allReviews && allReviews.length > 0) {
+      const avg = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+      await supabase
+        .from('stations')
+        .update({ rating: Math.round(avg * 10) / 10, review_count: allReviews.length })
+        .eq('id', stationId);
+    }
+  }
+
+  return { data, error };
+} 
+
+export async function searchStations(query: string) {
+  const { data, error } = await supabase
+    .from('stations')
+    .select('*')
+    .ilike('name', `%${query}%`)
+    .limit(30);
+  return { data, error };
+}
+
+export async function getFilteredStations(filters: {
+  status?: 'available' | 'in_use';
+  minRating?: number;
+}) {
+  let q = supabase.from('stations').select('*');
+  if (filters.status) q = q.eq('status', filters.status);
+  if (filters.minRating) q = q.gte('rating', filters.minRating);
+  const { data, error } = await q;
+  return { data, error };
+}
+
+export async function getFavoriteStations(userId: string) {
+  const { data, error } = await supabase
+    .from('favorites')
+    .select('station_id, stations(*)')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error || !data) return { data: [], error };
+
+  // Get charger counts for each station
+  const stations = data.map((f: any) => f.stations).filter(Boolean);
+  const stationsWithChargerCount = await Promise.all(
+    stations.map(async (station: any) => {
+      const { count } = await supabase
+        .from('chargers')
+        .select('*', { count: 'exact', head: true })
+        .eq('station_id', station.id);
+      return { ...station, charger_count: count ?? 0 };
+    })
+  );
+
+  return { data: stationsWithChargerCount, error: null };
 }
