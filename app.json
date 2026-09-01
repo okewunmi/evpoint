@@ -20,10 +20,10 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.fourfive.EVPoint",
       "config": {
-    "googleMaps": {
-      "apiKey": "YOUR_ACTUAL_API_KEY_HERE"
-    }
-  }
+        "googleMaps": {
+          "apiKey": "YOUR_ACTUAL_API_KEY_HERE"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -41,7 +41,8 @@
       ],
       "expo-web-browser",
       "@react-native-google-signin/google-signin",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
